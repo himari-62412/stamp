@@ -8,6 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
+    //こんにちは
 
     @IBOutlet weak var button: UIButton!
     
