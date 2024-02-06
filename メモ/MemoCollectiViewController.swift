@@ -10,7 +10,8 @@ import UIKit
 class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @IBOutlet var backgorundImageView: UIImageView!
-    @IBOutlet  var collectionView: UICollectionView!
+    @IBOutlet  var stampSelectCV: UICollectionView!
+    @IBOutlet var seasonSelectCV: UICollectionView! // 新しいコレクションビュー
     // @IBOutlet var collectionViewFlowLayout:  UICollectiontViewFlowLayout!
     
     var saveData: UserDefaults = UserDefaults.standard
@@ -20,8 +21,18 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
     var selectedIndex: Int = 0
     var stampHistory: [UIImageView] = []
     
+    var selectedStampIndex: Int = 0 // 選択されたスタンプのインデックス
+    
     //自分が用意した画像の名前が入ってる配列を作る
-    var CollectionViewCell: [String] = ["pinnkunoneko","aoineko","kiiroineko","oniwasoto","kappanasi neko","magukappu","siroineko","panda"]
+    var photoNameArray: [String] = ["pinnkunoneko","aoineko","kiiroineko","oniwasoto","kappanasi neko","magukappu","siroineko","panda"]
+    //季節のアイコンが入る
+    var seasonIconArray: [String] = ["inu","tyu-rippu"]
+    
+    var stampArray: [[String]] = [["pinnkunoneko","aoineko","kiiroineko","oniwasoto","kappanasi neko","magukappu","siroineko","panda"],["aka","akaidekai","pinnku","pinnkudekai","sakura","sakurannbo","tyu-rippu","ume"]]
+    
+    
+    
+    
     
     let configuration = UICollectionLayoutListConfiguration(appearance: .plain)
     
@@ -33,6 +44,7 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
     var pinchGesture = UIPinchGestureRecognizer()
     
     
+    
     override func viewDidLoad() {
         navigationItem.title = "SCREEN 1"
         navigationItem.backBarButtonItem = UIBarButtonItem(
@@ -42,7 +54,6 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
             action: nil)
         super.viewDidLoad()
         
-        
         saveData.register(defaults: [ "titles": [], "contents" :[]] )
         titles = saveData.object(forKey: "titles") as? [String]
         contents = saveData.object(forKey: "contents") as! [String]
@@ -51,27 +62,51 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
         
         
         //セルの再利用のための設定
-        collectionView.register(UINib(nibName: "CollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "Cell")
+        stampSelectCV.register(UINib(nibName: "CollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "stampCell")
         
         // デリゲート設定
-        collectionView.delegate = self
-        collectionView.dataSource = self
+        stampSelectCV.delegate = self
+        stampSelectCV.dataSource = self
         
-        
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 90, height: 90)
-        collectionView.collectionViewLayout = layout
+        let stampLayout = UICollectionViewFlowLayout()
+        stampLayout.itemSize = CGSize(width: 90, height: 90)
+        stampSelectCV.collectionViewLayout = stampLayout
+        // UICollectionView を表示
+        self.view.addSubview(stampSelectCV)
         
         
         // UICollectionView を表示
-        self.view.addSubview(collectionView)
+        self.view.addSubview(stampSelectCV)
         
         // 点線や選択状態を表すビジュアルエフェクトを設定
         setupSelectionVisualEffect()
         
-        //
+        //季節について。seasonSelectCVについて書く
+        
+        //セルのサイズ指定するためのコード。seasonCVのレイアウト(layout)を作る
+        let seasonLayout = UICollectionViewFlowLayout()
+        //セルのサイズを50✖️50にする
+        seasonLayout.itemSize = CGSize(width: 50, height: 50)
+        //スクロール方向を横方向に
+        seasonLayout.scrollDirection = .horizontal
+        //seasonCVのレイアウトを作ったseasonLayoutにする
+        seasonSelectCV.collectionViewLayout = seasonLayout
+        self.view.addSubview(seasonSelectCV)
+        
+        
+        seasonSelectCV.dataSource = self
+        seasonSelectCV.delegate = self
+        
+        // UICollectionViewFlowLayoutを作成してscrollDirectionを.horizontalに設定
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        seasonSelectCV.collectionViewLayout = layout
+        
+        seasonSelectCV.register(UINib(nibName: "SeasonCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "seasonCell")
+        
         
     }
+    
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -89,7 +124,7 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
     
     // ステータスバーの高さ
     let statusBarHeight = UIApplication.shared.statusBarFrame.height
-
+    
     // アイテムタッチ時の処理（UICollectionViewDelegate が必要）
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedIndex = indexPath.row
@@ -102,20 +137,47 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
     //ナンバー of アイテムin セクション
     //セクション内に、何個のアイテムがあるか。
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return CollectionViewCell.count
+        
+        if collectionView == seasonSelectCV{
+            return seasonIconArray.count
+        } else if collectionView == stampSelectCV{
+            return stampArray[0].count
+        } else {
+            fatalError("Unexpected collectionView")
+        }
     }
     
     //各セルの中身を指定するメソッド
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CollectionViewCell
         
-        cell.UllmageView.image = UIImage(named: CollectionViewCell[indexPath.row])
-        
-        
-        // スタンプの拡大・縮小を可能にする
-        cell.UllmageView.isUserInteractionEnabled = true
-        
-        return cell
+        if collectionView == seasonSelectCV{
+            let cell =
+            collectionView
+                .dequeueReusableCell(withReuseIdentifier: "seasonCell", for: indexPath ) as!
+            SeasonCollectionViewCell
+            
+            //選択肢として、Cellーつーつに表示する画像をセット。seasonCokkectionに入れている画像が表示されるようにする。
+            cell.seasonIMV.image = UIImage(named:seasonIconArray[indexPath.row])
+            
+            return cell
+        } else if collectionView == stampSelectCV {
+            let cell =
+            collectionView
+                .dequeueReusableCell(withReuseIdentifier: "stampCell", for: indexPath) as!
+            CollectionViewCell
+            
+            
+            cell.stampImage.image = UIImage(named: stampArray[0][indexPath.row])
+            
+            
+            // スタンプの拡大・縮小を可能にする
+            cell.stampImage.isUserInteractionEnabled = true
+            
+            return cell
+            
+        } else {
+            fatalError("Unexpected collectionView")
+        }
         
     }
     
@@ -161,14 +223,14 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
                 
                 
                 stampImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 120, height: 120))
-                stampImageView.image = UIImage(named: CollectionViewCell[selectedIndex])
+                stampImageView.image = UIImage(named: photoNameArray[selectedIndex])
                 stampImageView.center = location
                 stampImageView.isUserInteractionEnabled = true  // Enable user interaction
                 self.view.addSubview(stampImageView)
                 
                 
                 let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
-                                        stampImageView.addGestureRecognizer(pinchGesture)
+                stampImageView.addGestureRecognizer(pinchGesture)
             }
         }
         
@@ -215,7 +277,7 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
         var gamennnoiro = UIImageView(frame: CGRect(x: 0, y: 0, width: 120, height: 120))
         
         //押されたスタンプの画像を設定
-        let image = UIImage(named:CollectionViewCell[selectedIndex])!
+        let image = UIImage(named:photoNameArray[selectedIndex])!
         
         //タッチされた画像を置く
         if let stampImageView = stampImageView {

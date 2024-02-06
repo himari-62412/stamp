@@ -8,7 +8,10 @@
 import UIKit
 
 class SeasonCollectionViewCell: UICollectionViewCell {
-
+   
+    
+    @IBOutlet weak var seasonIMV: UIImageView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

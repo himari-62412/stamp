@@ -19,7 +19,9 @@
 		BE419A60287D8C48007B1208 /* __UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE419A5F287D8C48007B1208 /* __UITestsLaunchTests.swift */; };
 		BE8F947A29925588007F17EE /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8F947829925588007F17EE /* CollectionViewCell.swift */; };
 		BE8F947B29925588007F17EE /* CollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE8F947929925588007F17EE /* CollectionViewCell.xib */; };
+		BED5DA4E2B724F4900135635 /* SeasonCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BEDFD4662B69058800523C23 /* SeasonCollectionViewCell.xib */; };
 		BED9B86D2923A5760068D277 /* MemoCollectiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED9B86C2923A5760068D277 /* MemoCollectiViewController.swift */; };
+		BEDFD4672B69058800523C23 /* SeasonCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDFD4652B69058800523C23 /* SeasonCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 		BE8F947829925588007F17EE /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		BE8F947929925588007F17EE /* CollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewCell.xib; sourceTree = "<group>"; };
 		BED9B86C2923A5760068D277 /* MemoCollectiViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoCollectiViewController.swift; sourceTree = "<group>"; };
+		BEDFD4652B69058800523C23 /* SeasonCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonCollectionViewCell.swift; sourceTree = "<group>"; };
+		BEDFD4662B69058800523C23 /* SeasonCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SeasonCollectionViewCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +122,8 @@
 				BE8F947929925588007F17EE /* CollectionViewCell.xib */,
 				BE419A4A287D8C48007B1208 /* Info.plist */,
 				BE419A42287D8C46007B1208 /* __.xcdatamodeld */,
+				BEDFD4652B69058800523C23 /* SeasonCollectionViewCell.swift */,
+				BEDFD4662B69058800523C23 /* SeasonCollectionViewCell.xib */,
 			);
 			path = "メモ";
 			sourceTree = "<group>";
@@ -243,6 +249,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BED5DA4E2B724F4900135635 /* SeasonCollectionViewCell.xib in Resources */,
 				BE419A49287D8C48007B1208 /* LaunchScreen.storyboard in Resources */,
 				BE419A46287D8C48007B1208 /* Assets.xcassets in Resources */,
 				BE8F947B29925588007F17EE /* CollectionViewCell.xib in Resources */,
@@ -275,6 +282,7 @@
 				BE419A3E287D8C46007B1208 /* ViewController.swift in Sources */,
 				BE8F947A29925588007F17EE /* CollectionViewCell.swift in Sources */,
 				BE419A44287D8C46007B1208 /* __.xcdatamodeld in Sources */,
+				BEDFD4672B69058800523C23 /* SeasonCollectionViewCell.swift in Sources */,
 				BE419A3A287D8C46007B1208 /* AppDelegate.swift in Sources */,
 				BE419A3C287D8C46007B1208 /* SceneDelegate.swift in Sources */,
 			);
