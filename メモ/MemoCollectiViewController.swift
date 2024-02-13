@@ -24,12 +24,14 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
     var selectedStampIndex: Int = 0 // 選択されたスタンプのインデックス
     
     //自分が用意した画像の名前が入ってる配列を作る
-    var photoNameArray: [String] = ["pinnkunoneko","aoineko","kiiroineko","oniwasoto","kappanasi neko","magukappu","siroineko","panda"]
     //季節のアイコンが入る
     var seasonIconArray: [String] = ["inu","tyu-rippu"]
     
     var stampArray: [[String]] = [["pinnkunoneko","aoineko","kiiroineko","oniwasoto","kappanasi neko","magukappu","siroineko","panda"],["aka","akaidekai","pinnku","pinnkudekai","sakura","sakurannbo","tyu-rippu","ume"]]
     
+      
+    //選ばれた季節の番号を持って置くための変数
+    var selectedSeasonNumber: Int = 0
     
     
     
@@ -127,10 +129,19 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
     
     // アイテムタッチ時の処理（UICollectionViewDelegate が必要）
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedIndex = indexPath.row
+        
+        if collectionView == seasonSelectCV {
+            
+            selectedSeasonNumber = indexPath.row
+            stampSelectCV.reloadData()
+        }else if collectionView == stampSelectCV {
+            selectedIndex = indexPath.row
+        }
         //インデックスパス.ロー
         print("タップされた番号は\(indexPath.row)")
+        
     }
+    
     
     
     
@@ -139,6 +150,8 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         if collectionView == seasonSelectCV{
+            
+          
             return seasonIconArray.count
         } else if collectionView == stampSelectCV{
             return stampArray[0].count
@@ -167,7 +180,7 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
             CollectionViewCell
             
             
-            cell.stampImage.image = UIImage(named: stampArray[0][indexPath.row])
+            cell.stampImage.image = UIImage(named: stampArray[selectedSeasonNumber][indexPath.row])
             
             
             // スタンプの拡大・縮小を可能にする
@@ -223,7 +236,7 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
                 
                 
                 stampImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 120, height: 120))
-                stampImageView.image = UIImage(named: photoNameArray[selectedIndex])
+                stampImageView.image = UIImage(named: stampArray[selectedSeasonNumber][selectedIndex])
                 stampImageView.center = location
                 stampImageView.isUserInteractionEnabled = true  // Enable user interaction
                 self.view.addSubview(stampImageView)
@@ -277,7 +290,9 @@ class MemoCollectiViewController: UIViewController, UICollectionViewDataSource, 
         var gamennnoiro = UIImageView(frame: CGRect(x: 0, y: 0, width: 120, height: 120))
         
         //押されたスタンプの画像を設定
-        let image = UIImage(named:photoNameArray[selectedIndex])!
+        
+        let image = UIImage(named: stampArray[selectedSeasonNumber][selectedIndex])
+        print(stampArray[selectedSeasonNumber][selectedIndex], selectedSeasonNumber)
         
         //タッチされた画像を置く
         if let stampImageView = stampImageView {
